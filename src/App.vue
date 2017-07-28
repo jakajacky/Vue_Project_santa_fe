@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <el-alert title="错误提示的文案" type="error" show-icon>
-  </el-alert>
+    <el-alert id='tip' :title="tip_msg" type="error" show-icon v-if="isTip"></el-alert>
     <div class="login_logo">
 
     </div>
@@ -17,12 +16,12 @@
     	            <div class="input_fill user_input">
     	                <!--<label>用户名</label><br />-->
     	                <input type="text" placeholder="请输入用户名" name="text" autocomplete="off" v-on:focus="nameFoucs" v-on:blur="nameBlur" v-bind:class="{'active':namefoucs}" v-model="content_name">
-    	                <span class="user_icon"></span>
+    	                <span class="user_icon" v-bind:class="{'active':namefoucs}"></span>
     	            </div>
     	            <div class="input_fill password_input">
     	                <!--<label>密码</label><br />-->
     	                <input type="password" placeholder="请输入密码" name="password" autocomplete="off"  v-on:focus="passwordFoucs" v-on:blur="passwordBlur" v-bind:class="{'active':passwordfoucs}" v-model="content_pwd"/>
-    	                <span class="password_icon" ></span>
+    	                <span class="password_icon" v-bind:class="{'active':passwordfoucs}"></span>
     	            </div>
     	            </form>
     	            <div>
@@ -53,6 +52,8 @@ export default {
       passwordfoucs:false,
       content_name:"",
       content_pwd:"",
+      isTip:false,
+      tip_msg:""
     }
   },
   props: {
@@ -75,7 +76,13 @@ export default {
     //失去焦点
     nameBlur:function() {
       this.namefoucs = false;
-      this.checkPhone(this.content_name);
+      if (!this.checkPhone(this.content_name)) {
+        this.isTip = true;
+        this.tip_msg = '手机号码有误，请重新填写';
+      }
+      else {
+        this.isTip = false;
+      }
     },
     passwordFoucs:function() {
       this.passwordfoucs = true;
@@ -85,9 +92,11 @@ export default {
     },
     checkPhone:function(content){
       // var phone = document.getElementById('phone').value;
-      if(!(/^1[34578]\d{9}$/.test(content))){
-          alert("手机号码有误，请重填");
-          return false;
+      if(!(/^1[34578]\d{9}$/.test(content))) {
+        return false;
+      }
+      else {
+        return true;
       }
 }
   }
@@ -146,4 +155,9 @@ li {
 a {
   color: #42b983;
 }
+
+#tip {
+  text-align: center;
+}
+
 </style>
